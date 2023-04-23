@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "frontgardencamera"
+version = "0.1.0"
+description = ""
+authors = ["Milly Farouki"]
+readme = "README.md"
+packages = [
+    { include = "photo_processing" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+opencv-python = "^4.7.0.72"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

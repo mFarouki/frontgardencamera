@@ -1,0 +1,1 @@
+Directory to process photos taken by Raspberry Pi frontgardencamera
