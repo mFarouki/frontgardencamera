@@ -24,21 +24,22 @@ def assert_dt_format(dt_text: str, error_msg: str, dt_format="%Y-%m-%d") -> dt:
 
 
 def get_sun_times(date_text: str) -> list:
+    """
+    Returns a list of sunrise and sunset in Cambridge on a given date
+    :param date_text: date to query in format YYYY-MM-DD
+    :return: list of sunrise and sunset times as HH:MM
+    """
     date_to_query = assert_dt_format(
         dt_text=date_text, error_msg="incorrect date_text format; must be YYYY-MM-DD"
     )
     page = urlopen(f"{CAMBRIDGE_SUN_TIMES_URL}&dt={date_to_query.strftime('%d-%m-%Y')}")
     page_html = page.read().decode("utf-8")
 
+    # regular expression to find sunrise and sunset (highly specific to site queried)
     sun_times_re = 'sunrise = ".*",\n.*sunset = ".*",'
     raw_sun_times_text = re.search(sun_times_re, page_html, re.IGNORECASE).group()
-    cleaned_sun_times_text = raw_sun_times_text.strip()
-    remove_characters = ["\n", "\t", '"', "=", "sunrise", "sunset"]
 
-    for char in remove_characters:
-        cleaned_sun_times_text = cleaned_sun_times_text.replace(char, "")
-
-    return [sun_times.strip() for sun_times in cleaned_sun_times_text.split(",")[0:2]]
+    return re.findall(r"\d{2}:\d{2}", raw_sun_times_text)
 
 
 def get_file_info(file: Path) -> (str, dt, str):
@@ -53,6 +54,12 @@ def get_file_info(file: Path) -> (str, dt, str):
 
 
 def construct_dataset():
+    """
+    Selects images front frontgardencamera that can be used to create a video. Excludes images taken before camera is a
+    consistent position and also images taken before sunrise or after sunset. Constructs dataset to be processed before
+    combining into a video.
+    :return: None
+    """
     TO_PROCESS_DIR.mkdir(exist_ok=True)
     input_files = get_files(RAW_PHOTOS_DIR)
     sun_times = {}

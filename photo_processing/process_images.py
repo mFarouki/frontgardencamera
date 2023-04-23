@@ -4,6 +4,7 @@ from photo_processing.constants import (PROCESSED_PHOTOS_DIR, RAW_PHOTOS_DIR,
                                         TO_PROCESS_DIR)
 from photo_processing.utilities import get_files
 
+# Image taken with no input, to subtract as background noise
 NOISE_IMAGE = RAW_PHOTOS_DIR / "background_noise.jpg"
 
 
